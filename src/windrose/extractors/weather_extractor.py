@@ -19,7 +19,7 @@ class WeatherExtractor:
         url="https://api.open-meteo.com/v1/forecast"
 
         for attempt in range (1,self.max_retries+1):
-            print(f"Attepth {attempt}/{self.max_retries} for {city_name}")
+            print(f"Attempt {attempt}/{self.max_retries} for {city_name}")
 
             try: 
                 response=requests.get(
