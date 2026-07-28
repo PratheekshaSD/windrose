@@ -56,7 +56,14 @@ class AQIExtractor:
                         time_difference=current_time-reading_time
 
                         if time_difference<=timedelta(hours=self.staleness_hours):
-                            return latest_data
+                            sensor_map = {s["id"]: s["parameter"]["name"] for s in station["sensors"]}
+
+                            clean_result = {"city": city_name, "aqi_available": True}
+                            for reading in latest_data["results"]:
+                                pollutant = sensor_map.get(reading["sensorsId"])
+                                if pollutant:
+                                    clean_result[pollutant] = reading["value"]
+                            return clean_result
                 return {"city": city_name,"aqi_available":False}
 
             except Exception as e:

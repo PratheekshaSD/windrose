@@ -18,5 +18,5 @@ from src.windrose.extractors.aqi_extractor import AQIExtractor
 
 api_key = os.getenv("OPENAQ_API_KEY")
 aqi_extractor = AQIExtractor(api_key=api_key)
-result = aqi_extractor.fetch("Bengaluru", 12.97, 77.59)
+result = aqi_extractor.fetch("Karwar", 14.80, 74.13)
 print(result)
