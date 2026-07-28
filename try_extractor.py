@@ -35,3 +35,9 @@ weather_bengaluru = extractor.fetch("Bengaluru", 12.97, 77.59)
 aqi_bengaluru = aqi_extractor.fetch("Bengaluru", 12.97, 77.59)
 final_bengaluru = transformer.transform(weather_bengaluru, aqi_bengaluru)
 print(final_bengaluru)
+
+from src.windrose.loader import Loader
+
+loader = Loader()
+loader.load(final_row)
+print("Loaded successfully!")
