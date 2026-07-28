@@ -1,8 +1,5 @@
 # Trimmed to LocalExecutor for a solo, single-machine project (Windrose).
 # Removed vs. official file: redis, airflow-worker, flower, airflow-cli.
-#
-# AIRFLOW_UID   - your host user id (already set to 1000 in .env)
-# FERNET_KEY    - required, generate and add to .env (see note below)
 ---
 x-airflow-common:
   &airflow-common
@@ -33,7 +30,7 @@ x-airflow-common:
     &airflow-common-depends-on
     postgres:
       condition: service_healthy
-
+ 
 services:
   postgres:
     image: postgres:16
@@ -49,7 +46,7 @@ services:
       retries: 5
       start_period: 5s
     restart: always
-
+ 
   airflow-apiserver:
     <<: *airflow-common
     command: api-server
@@ -66,7 +63,7 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-
+ 
   airflow-scheduler:
     <<: *airflow-common
     command: scheduler
@@ -81,7 +78,7 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-
+ 
   airflow-dag-processor:
     <<: *airflow-common
     command: dag-processor
@@ -96,7 +93,7 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-
+ 
   airflow-triggerer:
     <<: *airflow-common
     command: triggerer
@@ -111,7 +108,7 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-
+ 
   airflow-init:
     <<: *airflow-common
     entrypoint: /bin/bash
@@ -137,6 +134,25 @@ services:
       _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
       _PIP_ADDITIONAL_REQUIREMENTS: ''
     user: "0:0"
-
+ 
+  postgres-windrose:
+    image: postgres:16
+    container_name: windrose-db
+    environment:
+      POSTGRES_USER: windrose
+      POSTGRES_PASSWORD: windrose_dev_pw
+      POSTGRES_DB: windrose
+    ports:
+      - "5433:5432"
+    volumes:
+      - windrose_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "windrose"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+ 
 volumes:
   postgres-db-volume:
+  windrose_pgdata:
