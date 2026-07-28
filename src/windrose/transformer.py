@@ -2,9 +2,15 @@ class Transformer:
     POLLUTANTS = ["pm25","pm10","co","no2","o3","so2"]
 
     def transform(self,weather_data,aqi_data):
-        merged={**weather_data,**aqi_data}  #merging both results from the extractor
+        result={
+            "city": weather_data["city"],
+            "temperature": weather_data["temperature"],
+            "humidity": weather_data["humidity"],
+            "wind_speed": weather_data["wind_speed"],
+            "aqi_available": aqi_data["aqi_available"]
+        }
 
-        for pollutant in self.POLLUTANTS:   #placing None for Missing keys
-            if pollutant not in merged:
-                merged[pollutant]=None
-        return merged
+        for pollutant in self.POLLUTANTS:
+            result[pollutant]=aqi_data.get(pollutant)
+
+        return result
