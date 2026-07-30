@@ -28,7 +28,7 @@ def windrose_pipeline():
         weather_extractor=WeatherExtractor()
         aqi_extractor=AQIExtractor(api_key=os.getenv("OPENAQ_API_KEY"))
         transformer=Transformer()
-        loader=Loader()
+        loader=Loader(host='postgres-windrose',port=5432)
         pipeline=Pipeline(weather_extractor,aqi_extractor,transformer,loader,CITIES)
         pipeline.run()
 
