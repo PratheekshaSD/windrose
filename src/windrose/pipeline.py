@@ -8,6 +8,7 @@ class Pipeline:
 
     def run(self):
         success_count = 0
+        failures=[]
 
         for city in self.cities:
             print(f"🏙️  Processing {city['name']}...")
@@ -19,7 +20,11 @@ class Pipeline:
                 self.loader.load(row)
                 success_count += 1
                 print(f"✅ {city['name']} done!")
+
             except Exception as e:
-                print(f"❌ {city['name']} failed: {e}")
+                print(f"{city['name']} failed{e}")
+                failures.append({"city":city,"error":str(e)})
 
         print(f"\n🎉 Pipeline run complete — {success_count}/{len(self.cities)} cities loaded successfully.")
+
+        return {"success_count": success_count,"failures":failures}

@@ -28,3 +28,25 @@ class Loader:
 
         cursor.close()
         conn.close()
+
+    def save_agent_decision(self, city, error_message, action, reasoning, source):
+        conn=psycopg2.connect(
+            host=self.host,
+            port=self.port,
+            user=self.user,
+            password=self.password,
+            dbname=self.dbname
+        )
+
+        cursor=conn.cursor()
+
+        query="""
+            INSERT INTO agent_decisions(city, error_message, action, reasoning, source)
+            VALUES (%s, %s, %s, %s, %s)
+            """
+
+        cursor.execute(query,(city, error_message, action, reasoning, source))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
