@@ -23,7 +23,7 @@ class AQIExtractor:
 
         params={
                 "coordinates": f"{latitude},{longitude}",
-                "radius": 25000 ,     #25km search radius for stations
+                "radius": 10000 ,     #25km search radius for stations
                 "limit":5      #no of stations to get back 
             }
 
@@ -39,7 +39,8 @@ class AQIExtractor:
                     headers=headers
                 )
                 data=response.json()
-                candidates=data["results"][:3]
+                candidates=data["results"][:5]
+                print(f"{city_name}: found {len(candidates)} candidate stations: {[c['id'] for c in candidates]}")
             
                 for station in candidates:
                     location_id=station["id"]
@@ -57,6 +58,7 @@ class AQIExtractor:
 
                         if time_difference<=timedelta(hours=self.staleness_hours):
                             sensor_map = {s["id"]: s["parameter"]["name"] for s in station["sensors"]}
+                            print(f"{city_name} sensor_map: {sensor_map}")
 
                             clean_result = {"city": city_name, "aqi_available": True}
                             for reading in latest_data["results"]:
