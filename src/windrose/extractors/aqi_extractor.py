@@ -23,7 +23,7 @@ class AQIExtractor:
 
         params={
                 "coordinates": f"{latitude},{longitude}",
-                "radius": 10000 ,     #25km search radius for stations
+                "radius": 10000 ,     #10km search radius for stations
                 "limit":5      #no of stations to get back 
             }
 
