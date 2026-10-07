@@ -1,6 +1,6 @@
 # 🌬️ Windrose
 
-A daily-scheduled data pipeline that pulls weather and air quality data for multiple cities, joins them, and stores the result — orchestrated by Apache Airflow, running fully in Docker. A self-healing agent monitors failures and decides how to respond automatically.
+A daily-scheduled data pipeline that pulls weather and air quality data for multiple cities, joins them, and stores the result — orchestrated by Apache Airflow, running fully in Docker. An automated failure-handling agent monitors pipeline failures, classifies them, and triggers the right response automatically.
 
 ## 🔧 What it does
 
@@ -16,7 +16,7 @@ Not every city has an active, recently-reporting AQI sensor nearby — AQI senso
 
 Two independent data sources, each capable of failing separately, feeding into one output. Airflow gives per-source retry handling, a fan-in dependency (load only proceeds once both fetches for a city are handled), and daily scheduling with run history — without needing to hand-roll that logic in a cron script.
 
-## 🩹 Self-Healing Agent
+## 🩹 Automated Failure-Handling Agent
 
 The base pipeline caught failures in a fixed `try/except` per city — if something failed, it just got logged and skipped. No judgment about *what kind* of failure it was or what the right response should be.
 
