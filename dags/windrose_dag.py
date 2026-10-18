@@ -1,6 +1,8 @@
 import sys
 sys.path.insert(0, "/opt/airflow")
 
+from alerts import send_alert
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -20,6 +22,10 @@ import pendulum
     schedule="@daily", #run daily once 
     start_date=(pendulum.datetime(2026,7,30,tz="UTC")),
     catchup=False  #avoid backfilling all the missed dates
+    on_failure_callback=lambda context: send_alert(
+        subject="Windrose DAG Failed",
+        body=f"DAG failed at task:{context['task_instance'].task_id}"
+    )
 )
 def windrose_pipeline():
 
@@ -51,12 +57,13 @@ def windrose_pipeline():
                     loader.load(row)
                     print(f"{city['name']} : retry succeeded")
                 except Exception as e:
-                    print(f"{city['name']} : retry failed again-{e}")
+    
+    
             elif action=="skip":
                     print(f"{city['name']} : skipped - {decision['reasoning']}")
             elif action =="alert":
-                    print(f"ALERT - {city['name']} needs attetnion: {decision['reasoning']}")
-            
+                    print(f"ALERT - {city['name']} needs attention: {decision['reasoning']}")
+
             loader.save_agent_decision(
                 city=city["name"],
                 error_message=failure["error"],

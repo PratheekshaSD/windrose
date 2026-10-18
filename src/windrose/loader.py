@@ -1,12 +1,15 @@
 import psycopg2
+import os
+from dotenv import load_dotenv
 
 class Loader:
-    def __init__(self, host="localhost", port=5433, user="windrose", password="windrose_dev_pw", dbname="windrose"):
-        self.host = host
-        self.port = port
-        self.user = user
-        self.password = password
-        self.dbname = dbname
+    def __init__(self):
+        load_dotenv()
+        self.host = os.getenv("DB_HOST")
+        self.port = os.getenv("DB_PORT")
+        self.user = os.getenv("DB_USER")
+        self.password = os.getenv("DB_PASSWORD")
+        self.dbname = os.getenv("DB_NAME")
 
     def load(self, row):
         conn = psycopg2.connect(
