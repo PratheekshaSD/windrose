@@ -21,7 +21,7 @@ import pendulum
 @dag(
     schedule="@daily", #run daily once 
     start_date=(pendulum.datetime(2026,7,30,tz="UTC")),
-    catchup=False  #avoid backfilling all the missed dates
+    catchup=False , #avoid backfilling all the missed dates
     on_failure_callback=lambda context: send_alert(
         subject="Windrose DAG Failed",
         body=f"DAG failed at task:{context['task_instance'].task_id}"
@@ -57,12 +57,18 @@ def windrose_pipeline():
                     loader.load(row)
                     print(f"{city['name']} : retry succeeded")
                 except Exception as e:
-    
-    
+                    send_alert(
+                        subject=f"Windrose - {city['name']} retry failed",
+                        body=str(e)
+                    )
+                    
             elif action=="skip":
                     print(f"{city['name']} : skipped - {decision['reasoning']}")
             elif action =="alert":
-                    print(f"ALERT - {city['name']} needs attention: {decision['reasoning']}")
+            send_alert(
+                subject=f"Windrose Alert - {city['name']}",
+                body=decision['reasoning']
+            )
 
             loader.save_agent_decision(
                 city=city["name"],
